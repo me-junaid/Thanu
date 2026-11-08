@@ -8,14 +8,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint --max-warnings 0",
+    "test": "node --experimental-strip-types --import ./test/loader.mjs --test test/**/*.test.ts",
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@repo/supabase": "workspace:*",
     "@repo/ui": "workspace:*",
     "geist": "1.8.2",
+    "lucide-react": "^1.66.0",
     "next": "16.4.3",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "swr": "^2.5.1",
+    "three": "^0.187.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "16.4.3",
@@ -26,6 +32,7 @@
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "@types/three": "^0.187.0",
     "eslint": "10.13.0",
     "postcss": "8.5.32",
     "tailwindcss": "4.3.3",

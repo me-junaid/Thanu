@@ -1,116 +1,493 @@
+import Link from "next/link";
 import Image from "next/image";
-import { Card } from "@repo/ui/card";
-import { Gradient } from "@repo/ui/gradient";
-import { TurborepoLogo } from "@repo/ui/turborepo-logo";
+import {
+  ArrowRight,
+  Sparkles,
+  CheckCircle2,
+  Building2,
+  Car,
+  ShieldCheck,
+  TrendingUp,
+  Award,
+  Globe,
+  Target,
+  KeyRound,
+  Users,
+} from "lucide-react";
+import {
+  AutoNationLogo,
+  CarMaxLogo,
+  CarvanaLogo,
+  DriveTimeLogo,
+  CazooLogo,
+  Cars24Logo,
+} from "../components/brand-logos";
+import { SiteHeader } from "../components/homepage/site-header";
+import { ShapeGrid } from "../components/ui/shape-grid";
+import { Topography } from "../components/ui/topography";
+import { InventoryPreviewSection } from "../components/inventory-preview/inventory-preview-section";
+import { AdminPreviewSection } from "../components/homepage/admin-preview-section";
+import { PricingSection } from "../components/homepage/pricing-section";
+import { FaqSection } from "../components/homepage/faq-section";
+import { SiteFooter } from "../components/homepage/site-footer";
 
-const LINKS = [
+const DEALERSHIP_SHOWCASES = [
   {
-    title: "Docs",
-    href: "https://turborepo.dev/docs",
-    description: "Find in-depth information about Turborepo features and API.",
+    name: "Apex Performance",
+    subdomain: "apex.dealers.io",
+    customDomain: "apexperformance.com",
+    tagline: "Track-ready Sports & Exotics",
+    stats: "48 vehicles listed • 99.9% uptime",
+    image:
+      "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=85",
+    tags: ["Custom Domain", "SSL Verified", "Multi-Staff"],
   },
   {
-    title: "Learn",
-    href: "https://turborepo.dev/docs/handbook",
-    description: "Learn more about monorepos with our handbook.",
+    name: "Silverstone Heritage",
+    subdomain: "silverstone.dealers.io",
+    customDomain: "silverstoneheritage.co.uk",
+    tagline: "Rare British Classics & Icons",
+    stats: "32 vehicles listed • Custom theme",
+    image:
+      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1200&q=85",
+    tags: ["VIN Decoder", "Dynamic SEO", "Lead Capture"],
   },
   {
-    title: "Templates",
-    href: "https://turborepo.dev/docs/getting-started/from-example",
-    description: "Choose from over 15 examples and deploy with a single click.",
+    name: "Nordic Motorhaus",
+    subdomain: "nordic.dealers.io",
+    customDomain: "nordicmotorhaus.se",
+    tagline: "EVs & Modern Performance",
+    stats: "64 vehicles listed • Instant reservation",
+    image:
+      "https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=85",
+    tags: ["Private Database", "Instant Load Speed", "Fast CDN"],
   },
   {
-    title: "Deploy",
-    href: "https://vercel.com/new",
-    description:
-      "Instantly deploy your Turborepo to a shareable URL with Vercel.",
+    name: "Monaco Prestige",
+    subdomain: "monaco.dealers.io",
+    customDomain: "monacoprestige.mc",
+    tagline: "Supercars & Hypercars",
+    stats: "21 exclusive allocations",
+    image:
+      "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=1200&q=85",
+    tags: ["VIP Inquiries", "Media Suite", "Staff Permissions"],
+  },
+  {
+    name: "Vanguard Motors",
+    subdomain: "vanguard.dealers.io",
+    customDomain: "vanguardfleet.de",
+    tagline: "Executive Sedans & SUVs",
+    stats: "85 certified vehicles in stock",
+    image:
+      "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=1200&q=85",
+    tags: ["Live Pricing", "Multi-Branch Ready", "Auto Backups"],
   },
 ];
 
-export default function Page() {
+const DEALERSHIP_STATS = [
+  { value: "100%", label: "Data Privacy", sublabel: "Zero lead or margin sharing" },
+  { value: "<60s", label: "Setup Time", sublabel: "From signup to live website" },
+  { value: "4.8x", label: "Lead Conversion", sublabel: "Faster inquiry follow-ups" },
+  { value: "24/7", label: "Edge Availability", sublabel: "Automated custom domain SSL" },
+];
+
+const DEALERSHIP_MODULES = [
+  {
+    icon: Globe,
+    title: "Branded Website",
+    badge: "Custom Domain",
+    description: "Autonomous customer storefront on your own domain with auto-SSL & dynamic SEO.",
+    accent: "text-blue-600 bg-blue-50/80 border-blue-200/60",
+  },
+  {
+    icon: Car,
+    title: "Inventory Suite",
+    badge: "360° Media",
+    description: "High-velocity catalog management with HD vehicle galleries & stock lifecycle.",
+    accent: "text-amber-600 bg-amber-50/80 border-amber-200/60",
+  },
+  {
+    icon: Target,
+    title: "Lead CRM",
+    badge: "Zero-Leak",
+    description: "Capture buyer inquiries from WhatsApp & web forms with automated follow-ups.",
+    accent: "text-emerald-600 bg-emerald-50/80 border-emerald-200/60",
+  },
+  {
+    icon: KeyRound,
+    title: "Test Drive Suite",
+    badge: "Live Calendar",
+    description: "Real-time showroom slot booking, car availability checks, and driver verification.",
+    accent: "text-violet-600 bg-violet-50/80 border-violet-200/60",
+  },
+  {
+    icon: TrendingUp,
+    title: "Sales & Deals",
+    badge: "Margin Control",
+    description: "Vehicle acquisition costs, buyer booking receipts, deal desks, and net margins.",
+    accent: "text-rose-600 bg-rose-50/80 border-rose-200/60",
+  },
+  {
+    icon: Users,
+    title: "Staff Management",
+    badge: "Granular RBAC",
+    description: "Role-based controls for sales executives, inventory managers, and dealership owners.",
+    accent: "text-indigo-600 bg-indigo-50/80 border-indigo-200/60",
+  },
+];
+
+export default function HomePage() {
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen p-24">
-      <div className="z-10 items-center justify-between w-full max-w-5xl font-mono text-sm lg:flex">
-        <p className="fixed top-0 left-0 flex justify-center w-full px-4 pt-8 pb-6 border backdrop-blur-2xl border-neutral-800 from-inherit lg:static lg:w-auto lg:rounded-xl lg:p-4">
-          examples/with-tailwind -&nbsp;
-          <code className="font-mono font-bold">web</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex items-end justify-center w-full h-48 lg:static lg:h-auto lg:w-auto">
-          <a
-            className="flex gap-2 p-8 pointer-events-none place-items-center lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-turbo&utm_medium=basic&utm_campaign=create-turbo"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            By{" "}
-            <Image
-              alt="Vercel Logo"
-              className="dark:invert"
-              height={24}
-              priority
-              src="/vercel.svg"
-              width={100}
-            />
-          </a>
-        </div>
-      </div>
+    <div className="min-h-screen bg-[#FDFBF7] text-neutral-900 selection:bg-neutral-950 selection:text-white font-sans antialiased pb-24 md:pb-0">
+      {/* ─── UNIFIED HEADER & MOBILE DOCK ─── */}
+      <SiteHeader />
 
-      <div className="relative flex place-items-center ">
-        <div className="font-sans w-auto pb-16 pt-[48px] md:pb-24 lg:pb-32 md:pt-16 lg:pt-20 flex justify-between gap-8 items-center flex-col relative z-0">
-          <div className="z-50 flex items-center justify-center w-full">
-            <div className="absolute min-w-[614px] min-h-[614px]">
-              <Image
-                alt="Turborepo"
-                height={614}
-                src="circles.svg"
-                width={614}
-              />
-            </div>
-            <div className="absolute z-50 flex items-center justify-center w-64 h-64">
-              <Gradient
-                className="opacity-90 w-[120px] h-[120px]"
-                conic
-                small
-              />
+      {/* ─── HERO SECTION ─── */}
+      <section className="relative pt-8 pb-16 sm:pt-14 sm:pb-24">
+        {/* Architectural Perspective Blueprint Grid */}
+        <ShapeGrid
+          shape="square"
+          direction="diagonal"
+          lineColor="rgba(0, 0, 0, 0.04)"
+          hoverColor="#91b894"
+          hoverFillColor="#b45309"
+          fillOpacity={0}
+          cellSize={37}
+          speed={0.3}
+          tiltX={0}
+          tiltY={0}
+          rainbow={false}
+          radius={2.5}
+          trail={0.3}
+          glow={0.75}
+          twinkle={0.1}
+          fade={0.45}
+          intro={false}
+          clickCascade={false}
+          className="absolute inset-0 w-full h-full z-0 pointer-events-none"
+        />
+
+        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {/* Left Column: Headline, Narrative & Primary CTAs */}
+            <div className="lg:col-span-6 text-center lg:text-left space-y-6">
+              {/* Editorial Badge */}
+              <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-[11px] font-semibold text-amber-900 shadow-2xs backdrop-blur-xs">
+                <Sparkles className="h-3.5 w-3.5 text-amber-600" />
+                <span>The OS for Pre-Owned Dealerships</span>
+              </div>
+
+              {/* Headline */}
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-neutral-950 leading-[1.12]">
+                Power your dealership with a{" "}
+                <span className="block mt-1 sm:mt-2 italic font-light text-neutral-850">
+                  branded digital storefront.
+                </span>
+              </h1>
+
+              {/* Subtitle */}
+              <p className="text-sm sm:text-base text-neutral-600 font-light leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Operate your entire dealership catalog on your own custom domain.
+                Equip sales staff with high-velocity inventory management, isolated database security,
+                and real-time public synchronization from a single platform.
+              </p>
+
+              {/* Primary CTA Cluster */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
+                <Link
+                  href="/signup"
+                  className="group inline-flex items-center justify-center gap-2 rounded-full bg-neutral-950 px-7 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-neutral-850 hover:shadow-lg w-full sm:w-auto"
+                >
+                  <span>Start 14-day free trial</span>
+                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </Link>
+                <Link
+                  href="#inventory"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-neutral-300 bg-white px-6 py-3.5 text-sm font-semibold text-neutral-800 shadow-2xs transition hover:bg-neutral-50 hover:border-neutral-400 w-full sm:w-auto"
+                >
+                  <span>Explore live demo</span>
+                </Link>
+              </div>
+
+              {/* Social Proof Sub-bar */}
+              <div className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-xs text-neutral-500 font-medium">
+                <span className="inline-flex items-center gap-1.5">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                  Custom domains
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                  Row-Level Security
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                  No credit card required
+                </span>
+              </div>
             </div>
 
-            <div className="flex justify-center items-center z-50">
-              <TurborepoLogo />
+            {/* Right Column: Featured Dealership Operating Modules */}
+            <div className="lg:col-span-6">
+              <div className="rounded-[2.25rem]  p-5 sm:p-7   transition duration-300 hover:border-neutral-300">
+                {/* 2x3 App Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {DEALERSHIP_MODULES.map((mod) => {
+                    const Icon = mod.icon;
+                    return (
+                      <div
+                        key={mod.title}
+                        className="group relative backdrop-blur-md rounded-xl border border-neutral-200/70 p-3.5 text-left transition duration-200 hover:shadow-xs"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <div
+                            className={`flex h-8 w-8 items-center justify-center rounded-lg border ${mod.accent} shadow-2xs transition group-hover:scale-105`}
+                          >
+                            <Icon className="h-4 w-4" />
+                          </div>
+                        </div>
+                        <h3 className="text-xs font-bold tracking-tight text-neutral-900 group-hover:text-neutral-950">
+                          {mod.title}
+                        </h3>
+                        <p className="text-[11px] text-neutral-500 font-light leading-relaxed mt-1">
+                          {mod.description}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </div>
-          <Gradient
-            className="top-[-500px] opacity-[0.15] w-[1000px] h-[1000px]"
-            conic
-          />
-          <div className="z-50 flex flex-col items-center justify-center gap-5 px-6 text-center lg:gap-6">
-            <svg
-              className="w-[160px] md:w-[200px] fill-black dark:fill-white"
-              viewBox="0 0 506 50"
-              width={200}
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <title>Turborepo logo</title>
-              <path d="M53.7187 12.0038V1.05332H0.945312V12.0038H20.8673V48.4175H33.7968V12.0038H53.7187Z" />
-              <path d="M83.5362 49.1431C99.764 49.1431 108.67 40.8972 108.67 27.3081V1.05332H95.7401V26.0547C95.7401 33.6409 91.7821 37.9287 83.5362 37.9287C75.2904 37.9287 71.3324 33.6409 71.3324 26.0547V1.05332H58.4029V27.3081C58.4029 40.8972 67.3084 49.1431 83.5362 49.1431Z" />
-              <path d="M128.462 32.7174H141.325L151.484 48.4175H166.327L154.848 31.3321C161.313 29.0232 165.271 23.8778 165.271 16.8853C165.271 6.72646 157.685 1.05332 146.141 1.05332H115.532V48.4175H128.462V32.7174ZM128.462 22.4925V11.8719H145.481C150.033 11.8719 152.54 13.8509 152.54 17.2152C152.54 20.3816 150.033 22.4925 145.481 22.4925H128.462Z" />
-              <path d="M171.287 48.4175H205.128C215.683 48.4175 221.752 43.404 221.752 35.0262C221.752 29.419 218.189 25.593 213.967 23.8778C216.87 22.4925 220.432 19.1942 220.432 13.9828C220.432 5.60502 214.495 1.05332 204.006 1.05332H171.287V48.4175ZM183.689 19.59V11.542H202.687C206.249 11.542 208.228 12.9273 208.228 15.566C208.228 18.2047 206.249 19.59 202.687 19.59H183.689ZM183.689 29.2871H203.875C207.371 29.2871 209.284 31.0022 209.284 33.5749C209.284 36.1476 207.371 37.8628 203.875 37.8628H183.689V29.2871Z" />
-              <path d="M253.364 0.261719C236.806 0.261719 224.866 10.6185 224.866 24.7354C224.866 38.8523 236.806 49.2091 253.364 49.2091C269.922 49.2091 281.796 38.8523 281.796 24.7354C281.796 10.6185 269.922 0.261719 253.364 0.261719ZM253.364 11.4761C262.072 11.4761 268.602 16.6215 268.602 24.7354C268.602 32.8493 262.072 37.9947 253.364 37.9947C244.656 37.9947 238.126 32.8493 238.126 24.7354C238.126 16.6215 244.656 11.4761 253.364 11.4761Z" />
-              <path d="M300.429 32.7174H313.292L323.451 48.4175H338.294L326.815 31.3321C333.28 29.0232 337.238 23.8778 337.238 16.8853C337.238 6.72646 329.652 1.05332 318.108 1.05332H287.499V48.4175H300.429V32.7174ZM300.429 22.4925V11.8719H317.448C322 11.8719 324.507 13.8509 324.507 17.2152C324.507 20.3816 322 22.4925 317.448 22.4925H300.429Z" />
-              <path d="M343.254 1.05332V48.4175H389.299V37.467H355.92V29.7489H385.539V19.0622H355.92V12.0038H389.299V1.05332H343.254Z" />
-              <path d="M408.46 33.3111H425.677C437.221 33.3111 444.807 27.7699 444.807 17.2152C444.807 6.59453 437.221 1.05332 425.677 1.05332H395.53V48.4175H408.46V33.3111ZM408.46 22.5585V11.8719H424.951C429.569 11.8719 432.076 13.8509 432.076 17.2152C432.076 20.5135 429.569 22.5585 424.951 22.5585H408.46Z" />
-              <path d="M476.899 0.261719C460.341 0.261719 448.401 10.6185 448.401 24.7354C448.401 38.8523 460.341 49.2091 476.899 49.2091C493.456 49.2091 505.33 38.8523 505.33 24.7354C505.33 10.6185 493.456 0.261719 476.899 0.261719ZM476.899 11.4761C485.606 11.4761 492.137 16.6215 492.137 24.7354C492.137 32.8493 485.606 37.9947 476.899 37.9947C468.191 37.9947 461.66 32.8493 461.66 24.7354C461.66 16.6215 468.191 11.4761 476.899 11.4761Z" />
-            </svg>
+        </div>
+      </section>
+
+      {/* ─── LIVE TENANT SHOWCASE SLIDER ─── */}
+      <section className="relative pt-6 pb-8">
+        <div id="showcase" className="w-full overflow-x-auto pb-8 scrollbar-none px-4 sm:px-8">
+          <div className="mx-auto flex w-max gap-5 sm:gap-6 justify-center">
+            {DEALERSHIP_SHOWCASES.map((tenant) => (
+              <div
+                key={tenant.name}
+                className="group relative h-[360px] w-[260px] sm:h-[420px] sm:w-[320px] shrink-0 overflow-hidden rounded-[2.25rem] bg-neutral-950 shadow-lg transition duration-300 hover:shadow-2xl border border-neutral-200/20"
+              >
+                {/* Background Automotive Visual */}
+                <Image
+                  src={tenant.image}
+                  alt={tenant.name}
+                  fill
+                  sizes="(max-width: 640px) 260px, 320px"
+                  className="object-cover object-center transition duration-700 group-hover:scale-105"
+                />
+
+                {/* Scrim Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/35 to-black/30" />
+
+                {/* Top Bar: Subdomain & Domain */}
+                <div className="absolute top-4 left-4 right-4 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-mono text-emerald-400 backdrop-blur-md border border-white/10">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>{tenant.customDomain}</span>
+                  </div>
+                  <span className="rounded-full bg-white/20 px-2 py-0.5 text-[9px] font-semibold text-white uppercase tracking-wider backdrop-blur-md">
+                    Live
+                  </span>
+                </div>
+
+                {/* Card Bottom Meta */}
+                <div className="absolute bottom-5 left-5 right-5 text-white">
+                  <p className="text-lg font-bold tracking-tight text-white">
+                    {tenant.name}
+                  </p>
+                  <p className="text-xs text-neutral-300 mt-0.5">{tenant.tagline}</p>
+                  <p className="text-[11px] font-mono text-neutral-400 mt-1">
+                    {tenant.stats}
+                  </p>
+
+                  {/* Feature Pills */}
+                  <div className="mt-3.5 flex flex-wrap gap-1.5">
+                    {tenant.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-medium text-neutral-100 backdrop-blur-md border border-white/15"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      <div className="grid mb-32 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        {LINKS.map(({ title, href, description }) => (
-          <Card href={href} key={title} title={title}>
-            {description}
-          </Card>
-        ))}
-      </div>
-    </main>
+        {/* ─── DEALERSHIP INTRO / ABOUT SECTION ─── */}
+        <div id="about" className="mx-auto mt-20 max-w-6xl px-6 lg:px-8">
+          <div className="rounded-[2.5rem] border border-neutral-200/80 bg-white/90 p-8 sm:p-14 lg:p-16 shadow-xs backdrop-blur-xs">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+              {/* Left Column: Mission & Narrative */}
+              <div className="lg:col-span-7 text-left space-y-5">
+                <div className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-100/80 px-3 py-1 text-[11px] font-semibold text-neutral-800">
+                  <Building2 className="h-3.5 w-3.5 text-neutral-700" />
+                  <span>The Modern Dealership Operating Model</span>
+                </div>
+
+                <h2 className="font-serif text-3xl sm:text-4xl text-neutral-950 font-normal tracking-tight leading-[1.2]">
+                  One unified platform. Multiple independent dealerships.{" "}
+                  <span className="italic font-light text-neutral-700">
+                    Complete data isolation.
+                  </span>
+                </h2>
+
+                <p className="text-sm sm:text-base text-neutral-600 font-light leading-relaxed">
+                  We built this platform specifically for pre-owned automobile dealerships who want to
+                  own their brand rather than being lost inside generic car classified marketplaces.
+                  Every dealership receives its own branded customer-facing website, vehicle inventory pipeline,
+                  lead management CRM, and role-based staff workspace.
+                </p>
+
+                <p className="text-xs sm:text-sm text-neutral-500 leading-relaxed">
+                  From multi-branch vehicle transfers and customer test drives to purchase tracking
+                  and profit accounting, our multi-tenant architecture keeps every dealership’s
+                  customers, leads, and finances securely isolated using PostgreSQL Row-Level Security.
+                </p>
+
+                {/* 3 Value Pillars */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3">
+                  <div className="flex items-start gap-2.5">
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-neutral-950 text-white">
+                      <Car className="h-3 w-3" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-neutral-900">Custom Branding</p>
+                      <p className="text-[11px] text-neutral-500">Your logo, domain, and colors</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-neutral-950 text-white">
+                      <ShieldCheck className="h-3 w-3" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-neutral-900">Bank-Grade Isolation</p>
+                      <p className="text-[11px] text-neutral-500">Strict PostgreSQL RLS</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-neutral-950 text-white">
+                      <TrendingUp className="h-3 w-3" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-neutral-900">Direct Inquiries</p>
+                      <p className="text-[11px] text-neutral-500">Zero middleman commissions</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Key Metrics & Architectural Card */}
+              <div className="lg:col-span-5 flex flex-col gap-4">
+                <div className="relative overflow-hidden rounded-3xl bg-neutral-950 p-6 sm:p-8 text-white text-left shadow-2xl border border-neutral-800/80 group">
+                  {/* Topography 3D terrain canvas background */}
+                  <Topography
+                    color="#06b6d4"
+                    lineCount={22}
+                    lineWidth={1.2}
+                    elevation={1.0}
+                    tilt={34}
+                    speed={0.2}
+                    direction="forward"
+                    glow={0.65}
+                    depthOfField={0.5}
+                    fog={0.35}
+                    hoverEffect="lift"
+                    clickEffect="pulse"
+                    markers="dots"
+                    className="absolute inset-0 w-full h-full opacity-45 transition-opacity duration-500 group-hover:opacity-60"
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+                  />
+
+                  {/* Gradient scrim overlay for contrast & readability */}
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/60 to-transparent" />
+
+                  {/* Content Container */}
+                  <div className="relative z-10 pointer-events-none">
+                    <div className="flex items-center justify-between pb-6 border-b border-white/10">
+                      <div>
+                        <p className="text-xs font-mono text-cyan-400">Dealership OS</p>
+                        <p className="text-base font-bold text-white mt-0.5">Platform Metrics</p>
+                      </div>
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 backdrop-blur-xs border border-white/10">
+                        <Award className="h-4 w-4 text-cyan-400" />
+                      </span>
+                    </div>
+
+                    {/* 2x2 Stats Grid */}
+                    <div className="grid grid-cols-2 gap-5 pt-6">
+                      {DEALERSHIP_STATS.map((stat) => (
+                        <div key={stat.label}>
+                          <p className="font-serif text-2xl sm:text-3xl font-normal text-white">
+                            {stat.value}
+                          </p>
+                          <p className="text-xs font-semibold text-neutral-200 mt-1">
+                            {stat.label}
+                          </p>
+                          <p className="text-[10px] text-neutral-400 mt-0.5">
+                            {stat.sublabel}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Call to action inside card */}
+                    <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
+                      <span className="text-xs text-neutral-400">Ready to migrate your fleet?</span>
+                      <Link
+                        href="/signup"
+                        className="pointer-events-auto inline-flex items-center gap-1 text-xs font-semibold text-white hover:text-cyan-300 hover:underline underline-offset-4 transition-colors"
+                      >
+                        <span>Get started</span>
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── INTERACTIVE VEHICLE INVENTORY PREVIEW SECTION ─── */}
+        <InventoryPreviewSection />
+
+        {/* ─── DEALERSHIP ADMIN WORKSPACE PREVIEW ─── */}
+        <AdminPreviewSection />
+
+        {/* ─── SUBSCRIPTION PRICING SECTION ─── */}
+        <PricingSection />
+
+        {/* ─── FREQUENTLY ASKED QUESTIONS (FAQ) ─── */}
+        <FaqSection />
+
+        {/* ─── PRE-OWNED CAR BRANDS & DEALERSHIP NETWORKS LOGO STRIP ─── */}
+        <div className="mx-auto mt-28 max-w-7xl px-6 lg:px-8 border-t border-neutral-200/70 pt-14">
+          <p className="text-center text-[11px] font-semibold tracking-widest text-neutral-400 uppercase font-mono">
+            Trusted by top pre-owned dealership brands & networks
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-neutral-800 opacity-60 transition duration-300 hover:opacity-100">
+            <AutoNationLogo className="hover:text-neutral-950 transition-colors" />
+            <CarMaxLogo className="hover:text-neutral-950 transition-colors" />
+            <CarvanaLogo className="hover:text-neutral-950 transition-colors" />
+            <DriveTimeLogo className="hover:text-neutral-950 transition-colors" />
+            <CazooLogo className="hover:text-neutral-950 transition-colors" />
+            <Cars24Logo className="hover:text-neutral-950 transition-colors" />
+          </div>
+        </div>
+      </section>
+
+      {/* ─── SITE FOOTER ─── */}
+      <SiteFooter />
+    </div>
   );
 }
