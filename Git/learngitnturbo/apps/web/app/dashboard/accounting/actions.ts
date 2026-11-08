@@ -290,56 +290,69 @@ export async function getAccountingOverviewAction(): Promise<{
     const userRole = authContext.profile?.role || "owner";
     const isOwnerOrAccountant = ["owner", "admin", "accountant"].includes(userRole);
 
-    // 1. Fetch Sales Deals
-    const { data: dbDeals, error: dealsError } = await supabase
-      .from("sales_deals")
-      .select(`
-        *,
-        vehicle:vehicles (
-          id,
-          brand,
-          model,
-          variant,
-          manufacturing_year,
-          registration_number,
-          asking_price,
-          purchase_price,
-          refurbishment_cost,
-          status,
-          vehicle_media (url, is_hero)
-        ),
-        payments:deal_payments (*),
-        sales_rep:profiles!sales_deals_sales_rep_id_fkey (id, full_name)
-      `)
-      .eq("dealership_id", dealershipId)
-      .order("created_at", { ascending: false });
+    // Parallel execution: fetch deals, expenses, inventory, and staff concurrently to avoid backend waterfall
+    const [
+      { data: dbDeals, error: dealsError },
+      { data: dbExpenses, error: expensesError },
+      { data: dbInventory, error: inventoryError },
+      { data: dbStaff, error: staffError },
+    ] = await Promise.all([
+      supabase
+        .from("sales_deals")
+        .select(`
+          *,
+          vehicle:vehicles (
+            id,
+            brand,
+            model,
+            variant,
+            manufacturing_year,
+            registration_number,
+            asking_price,
+            purchase_price,
+            refurbishment_cost,
+            status,
+            vehicle_media (url, is_hero)
+          ),
+          payments:deal_payments (*),
+          sales_rep:profiles!sales_deals_sales_rep_id_fkey (id, full_name)
+        `)
+        .eq("dealership_id", dealershipId)
+        .order("created_at", { ascending: false }),
+
+      supabase
+        .from("vehicle_expenses")
+        .select(`
+          *,
+          vehicle:vehicles (brand, model, registration_number)
+        `)
+        .eq("dealership_id", dealershipId)
+        .order("created_at", { ascending: false }),
+
+      supabase
+        .from("vehicles")
+        .select("id, brand, model, variant, registration_number, asking_price, purchase_price, refurbishment_cost, vehicle_media(url, is_hero)")
+        .eq("dealership_id", dealershipId)
+        .eq("status", "available"),
+
+      supabase
+        .from("profiles")
+        .select("id, full_name, role")
+        .eq("dealership_id", dealershipId),
+    ]);
 
     if (dealsError) {
       console.error("Error fetching deals:", dealsError);
     }
-
-    // 2. Fetch Vehicle Expenses
-    const { data: dbExpenses } = await supabase
-      .from("vehicle_expenses")
-      .select(`
-        *,
-        vehicle:vehicles (brand, model, registration_number)
-      `)
-      .eq("dealership_id", dealershipId)
-      .order("created_at", { ascending: false });
-
-    // 3. Fetch Available Vehicles for New Deals
-    const { data: dbInventory } = await supabase
-      .from("vehicles")
-      .select("id, brand, model, variant, registration_number, asking_price, purchase_price, refurbishment_cost, vehicle_media(url, is_hero)")
-      .eq("dealership_id", dealershipId)
-      .eq("status", "available");
-
-    // 4. Fetch Staff
-    const { data: dbStaff } = await supabase
-      .from("profiles")
-      .select("id, full_name, role")
-      .eq("dealership_id", dealershipId);
+    if (expensesError) {
+      console.error("Error fetching expenses:", expensesError);
+    }
+    if (inventoryError) {
+      console.error("Error fetching inventory:", inventoryError);
+    }
+    if (staffError) {
+      console.error("Error fetching staff:", staffError);
+    }
 
     // Map deals to presentation structure
     const deals: SalesDealItem[] = (dbDeals || []).map((d: any) => {

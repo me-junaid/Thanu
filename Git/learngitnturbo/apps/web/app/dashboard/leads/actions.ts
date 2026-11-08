@@ -153,10 +153,27 @@ export async function getLeadsAction(
   const dealershipId = profile.dealershipId;
   const isAssignedOnly = !auth.can("leads:view_all") && auth.can("leads:view_assigned_only");
 
-  // Query leads with joined vehicles and assigned staff profiles
+  // Query leads with joined vehicles and assigned staff profiles with pruned projections
   let query = (supabase.from("leads") as any)
     .select(`
-      *,
+      id,
+      dealership_id,
+      customer_name,
+      phone_number,
+      email,
+      city,
+      vehicle_id,
+      source,
+      status,
+      priority,
+      budget_amount,
+      financing_required,
+      trade_in_vehicle,
+      assigned_to,
+      next_followup_at,
+      lost_reason,
+      created_at,
+      updated_at,
       vehicles (
         id,
         brand,
@@ -600,6 +617,25 @@ export async function getDealershipStaffOptionsAction(): Promise<
     fullName: s.full_name || "Showroom Staff",
     role: s.role || "sales_executive",
   }));
+}
+
+/**
+ * Optimized bundle action running leads list, vehicle options, and staff options in parallel.
+ * Reused by LeadsShell and predictive prefetcher for 0ms transitions.
+ */
+export async function getLeadsDashboardBundleAction(options: LeadsFilterOptions = {}): Promise<{
+  leads: LeadItem[];
+  stats: LeadsStats;
+  vehicleOptions: { id: string; label: string; price: string }[];
+  staffOptions: { id: string; fullName: string; role: string }[];
+}> {
+  const [{ leads, stats }, vehicleOptions, staffOptions] = await Promise.all([
+    getLeadsAction(options),
+    getLeadVehicleOptionsAction(),
+    getDealershipStaffOptionsAction(),
+  ]);
+
+  return { leads, stats, vehicleOptions, staffOptions };
 }
 
 /**

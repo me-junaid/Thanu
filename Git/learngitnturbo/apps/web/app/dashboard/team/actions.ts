@@ -195,14 +195,28 @@ export async function getTeamRosterAction(): Promise<TeamRosterResponse> {
     const callerRole = authContext.profile.role;
     const callerEmail = authContext.user.email || "";
 
-    // 1. Fetch all profiles belonging to this showroom
-    const { data: dbProfiles, error: profilesError } = await (supabase.from("profiles") as any)
-      .select("id, full_name, role, status, phone, avatar_url, department, joining_date, last_active_at, created_at")
-      .eq("dealership_id", dealershipId);
+    // 1. Fetch profiles and staff invites in parallel (Zero-waterfall pipeline)
+    const [
+      { data: dbProfiles, error: profilesError },
+      { data: dbInvites, error: invitesError },
+    ] = await Promise.all([
+      (supabase.from("profiles") as any)
+        .select("id, full_name, role, status, phone, avatar_url, department, joining_date, last_active_at, created_at")
+        .eq("dealership_id", dealershipId),
+      (supabase.from("staff_invites") as any)
+        .select("id, email, full_name, intended_role, status, expires_at, created_at, invited_by")
+        .eq("dealership_id", dealershipId)
+        .in("status", ["pending", "expired"])
+        .order("created_at", { ascending: false }),
+    ]);
 
     if (profilesError) {
       console.error("Error fetching staff profiles:", profilesError);
       throw new Error("Could not retrieve team roster.");
+    }
+
+    if (invitesError) {
+      console.error("Error fetching staff invites:", invitesError);
     }
 
     const profilesList = (dbProfiles || []) as Array<{
@@ -222,17 +236,6 @@ export async function getTeamRosterAction(): Promise<TeamRosterResponse> {
     const profileMap = new Map<string, string>();
     for (const p of profilesList) {
       profileMap.set(p.id, p.full_name || "Showroom Staff");
-    }
-
-    // 2. Fetch staff invites (pending or expired)
-    const { data: dbInvites, error: invitesError } = await (supabase.from("staff_invites") as any)
-      .select("id, email, full_name, intended_role, status, expires_at, created_at, invited_by")
-      .eq("dealership_id", dealershipId)
-      .in("status", ["pending", "expired"])
-      .order("created_at", { ascending: false });
-
-    if (invitesError) {
-      console.error("Error fetching staff invites:", invitesError);
     }
 
     const invitesList = (dbInvites || []) as Array<{

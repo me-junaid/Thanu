@@ -44,8 +44,10 @@ export function TestDrivesShell({
         initialTestDrives && initialStats
           ? { testDrives: initialTestDrives, stats: initialStats }
           : undefined,
+      dedupingInterval: 60000,
       revalidateOnFocus: false,
-      dedupingInterval: 30000,
+      revalidateIfStale: true,
+      keepPreviousData: true,
     }
   );
 

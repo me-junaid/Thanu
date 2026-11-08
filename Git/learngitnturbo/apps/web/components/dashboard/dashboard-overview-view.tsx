@@ -145,12 +145,12 @@ export function DashboardOverviewView({ onboardingSuccess = false }: DashboardOv
       )}
 
       {/* ─── Top Greeting & Header Bar ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-neutral-200/80">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 ">
         <div>
-          <h1 className="mt-2 font-serif text-3xl sm:text-4xl text-neutral-950 font-normal tracking-tight">
+          <h1 className="mt-2 font-serif text-2xl sm:text-3xl text-neutral-950 font-normal tracking-tight">
             Dealership Command Center
           </h1>
-          <p className="mt-1 text-xs sm:text-sm text-neutral-600 font-light">
+          <p className="mt-1 text-xs text-neutral-600 font-light">
             Apex Motors • Main Showroom, 100ft Road, Koramangala
           </p>
         </div>

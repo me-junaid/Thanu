@@ -14,6 +14,11 @@ register(
             } catch {}
           }
         }
+        if (specifier.startsWith("next/")) {
+          try {
+            return await nextResolve(specifier + ".js", context);
+          } catch {}
+        }
         throw err;
       }
     }

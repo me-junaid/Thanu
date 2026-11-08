@@ -47,8 +47,10 @@ export function AccountingShell({ initialData }: AccountingShellProps) {
     },
     {
       fallbackData: initialData,
+      dedupingInterval: 60000,
       revalidateOnFocus: false,
-      dedupingInterval: 30000,
+      revalidateIfStale: true,
+      keepPreviousData: true,
     }
   );
 

@@ -83,33 +83,124 @@ export function TeamManagementClient({ initialData }: TeamManagementClientProps)
     });
   };
 
-  // Toggle account suspension
+  // Toggle account suspension with optimistic UI update and rollback
   const handleToggleSuspend = async (member: StaffMemberItem) => {
     setIsTogglingSuspendId(member.id);
+
+    // 1. Snapshot previous state for rollback on error
+    const previousStaff = [...staff];
+    const previousStats = { ...stats };
+    const nextStatus = member.status === "active" ? "suspended" : "active";
+
+    // 2. Optimistic state calculation
+    const updatedStaff = staff.map((s) =>
+      s.id === member.id ? { ...s, status: nextStatus as "active" | "suspended" } : s
+    );
+    const updatedStats: TeamOverviewStats = {
+      ...stats,
+      totalActive:
+        nextStatus === "active"
+          ? stats.totalActive + 1
+          : Math.max(0, stats.totalActive - 1),
+      suspendedCount:
+        nextStatus === "suspended"
+          ? stats.suspendedCount + 1
+          : Math.max(0, stats.suspendedCount - 1),
+    };
+
+    // 3. Immediately update local UI and SWR cache (zero perceived latency)
+    setStaff(updatedStaff);
+    setStats(updatedStats);
+    if (selectedStaffForDrawer && selectedStaffForDrawer.id === member.id) {
+      setSelectedStaffForDrawer({ ...selectedStaffForDrawer, status: nextStatus as "active" | "suspended" });
+    }
+    mutate(
+      "dashboard-team-roster-data",
+      (current: TeamRosterResponse | undefined) => {
+        if (!current) return current;
+        return {
+          ...current,
+          staff: updatedStaff,
+          stats: updatedStats,
+        };
+      },
+      false
+    );
+
+    // 4. Dispatch server action with rollback on failure
     try {
-      if (member.status === "active") {
-        await suspendStaffMemberAction({ staffId: member.id });
+      const res =
+        member.status === "active"
+          ? await suspendStaffMemberAction({ staffId: member.id })
+          : await reactivateStaffMemberAction({ staffId: member.id });
+
+      if (!res.success) {
+        // Rollback state on unsuccessful response
+        console.error("Failed to toggle suspension:", res.error);
+        setStaff(previousStaff);
+        setStats(previousStats);
+        refreshData();
       } else {
-        await reactivateStaffMemberAction({ staffId: member.id });
+        // Background sync to ensure server truth
+        refreshData();
       }
-      refreshData();
     } catch (err) {
-      console.error("Error toggling account suspension:", err);
+      console.error("Error toggling account suspension, rolling back:", err);
+      setStaff(previousStaff);
+      setStats(previousStats);
+      refreshData();
     } finally {
       setIsTogglingSuspendId(null);
     }
   };
 
-  // Revoke an invitation
+  // Revoke an invitation with optimistic removal and rollback
   const handleRevokeInvite = async (inviteId: string) => {
     setIsRevokingInviteId(inviteId);
+
+    // 1. Snapshot previous state
+    const previousInvites = [...invites];
+    const previousStats = { ...stats };
+
+    // 2. Optimistic calculations
+    const updatedInvites = invites.filter((inv) => inv.id !== inviteId);
+    const updatedStats = {
+      ...stats,
+      pendingInvites: Math.max(0, stats.pendingInvites - 1),
+    };
+
+    // 3. Update local state and SWR cache immediately
+    setInvites(updatedInvites);
+    setStats(updatedStats);
+    mutate(
+      "dashboard-team-roster-data",
+      (current: TeamRosterResponse | undefined) => {
+        if (!current) return current;
+        return {
+          ...current,
+          invites: updatedInvites,
+          stats: updatedStats,
+        };
+      },
+      false
+    );
+
+    // 4. Dispatch server action
     try {
       const res = await revokeInviteAction({ inviteId });
-      if (res.success) {
+      if (!res.success) {
+        console.error("Failed to revoke invite:", res.error);
+        setInvites(previousInvites);
+        setStats(previousStats);
+        refreshData();
+      } else {
         refreshData();
       }
     } catch (err) {
-      console.error("Error revoking invite:", err);
+      console.error("Error revoking invite, rolling back:", err);
+      setInvites(previousInvites);
+      setStats(previousStats);
+      refreshData();
     } finally {
       setIsRevokingInviteId(null);
     }

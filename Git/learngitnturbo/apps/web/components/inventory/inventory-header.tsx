@@ -36,10 +36,10 @@ export function InventoryHeader({
       {/* ─── Top Bar: Title & Action Buttons ─── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2">
         <div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-normal text-neutral-950 tracking-tight mt-1.5">
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal text-neutral-950 tracking-tight mt-1.5">
             Fleet Inventory
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-500 font-light mt-0.5">
+          <p className="text-xs text-neutral-500 font-light mt-0.5">
             Real-time procurement, margin economics, certification lifecycle, and public storefront synchronization.
           </p>
         </div>

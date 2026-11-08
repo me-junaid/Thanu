@@ -3,8 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useDashboardLayout } from "./dashboard-shell";
 import { usePermissions } from "../../lib/permissions";
+import { prefetchRouteData } from "../../lib/prefetch";
 import type { PermissionKey } from "../../lib/permissions/types";
 import {
   LayoutDashboard,
@@ -86,10 +86,7 @@ export function DashboardSidebar({
   onToggle,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
-  const { activePath, navigateTo } = useDashboardLayout();
   const { can, canAny } = usePermissions();
-
-  const currentPath = activePath || pathname;
 
   const visibleNavItems = NAV_ITEMS.filter((item) => {
     if (item.permission && !can(item.permission)) {
@@ -101,9 +98,19 @@ export function DashboardSidebar({
     return true;
   });
 
+  const handlePrefetchIntent = (item: NavItem) => {
+    if (item.permission && !can(item.permission)) {
+      return;
+    }
+    if (item.anyPermissions && !canAny(...item.anyPermissions)) {
+      return;
+    }
+    prefetchRouteData(item.href);
+  };
+
   return (
     <aside
-      className={`hidden lg:flex fixed top-0 left-0 h-screen flex-col justify-between border-r border-neutral-200/80 bg-white z-30 overflow-y-auto transition-all duration-300 ease-in-out ${
+      className={`hidden lg:flex fixed top-0 left-0 h-screen flex-col justify-between  bg-white z-30 overflow-y-auto transition-all duration-300 ease-in-out ${
         isCollapsed ? "w-20 p-3 items-center" : "w-64 p-5"
       }`}
     >
@@ -147,18 +154,15 @@ export function DashboardSidebar({
           )}
           {visibleNavItems.map((item) => {
             const Icon = item.icon;
-            const isActive = currentPath === item.href;
+            const isActive = pathname === item.href;
 
             return (
               <div key={item.href} className="relative group w-full">
-                <a
+                <Link
                   href={item.href}
-                  onClick={(e) => {
-                    if (!e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.button === 0) {
-                      e.preventDefault();
-                      navigateTo(item.href);
-                    }
-                  }}
+                  prefetch={true}
+                  onMouseEnter={() => handlePrefetchIntent(item)}
+                  onTouchStart={() => handlePrefetchIntent(item)}
                   className={`group flex items-center rounded-xl text-xs font-semibold transition-all duration-150 active:scale-95 ${
                     isCollapsed
                       ? "h-11 w-11 justify-center mx-auto px-0"
@@ -196,7 +200,7 @@ export function DashboardSidebar({
                       {item.badge}
                     </span>
                   )}
-                </a>
+                </Link>
 
                 {/* Floating Tooltip in Collapsed Mode */}
                 {isCollapsed && (

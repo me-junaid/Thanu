@@ -15,6 +15,7 @@ import {
   getLeadsAction,
   getLeadVehicleOptionsAction,
   getDealershipStaffOptionsAction,
+  getLeadsDashboardBundleAction,
   updateLeadStatusAction,
   type LeadItem,
   type LeadsStats,
@@ -42,12 +43,7 @@ export function LeadsShell({
   const { data, isLoading, mutate } = useSWR(
     "dashboard-leads-data",
     async () => {
-      const [{ leads, stats }, vehicleOptions, staffOptions] = await Promise.all([
-        getLeadsAction(),
-        getLeadVehicleOptionsAction(),
-        getDealershipStaffOptionsAction(),
-      ]);
-      return { leads, stats, vehicleOptions, staffOptions };
+      return await getLeadsDashboardBundleAction();
     },
     {
       fallbackData:
@@ -59,8 +55,10 @@ export function LeadsShell({
               staffOptions: initialStaffOptions,
             }
           : undefined,
+      dedupingInterval: 60000,
       revalidateOnFocus: false,
-      dedupingInterval: 30000,
+      revalidateIfStale: true,
+      keepPreviousData: true,
     }
   );
 

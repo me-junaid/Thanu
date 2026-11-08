@@ -42,8 +42,10 @@ export function InventoryShell({
         initialVehicles && initialStats
           ? { vehicles: initialVehicles, stats: initialStats }
           : undefined,
+      dedupingInterval: 60000,
       revalidateOnFocus: false,
-      dedupingInterval: 30000,
+      revalidateIfStale: true,
+      keepPreviousData: true,
     }
   );
 

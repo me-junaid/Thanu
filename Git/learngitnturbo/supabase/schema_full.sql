@@ -577,3 +577,45 @@ BEGIN
   );
 END;
 $$;
+
+-- ==============================================================================
+-- COMPOSITE MULTI-TENANT PERFORMANCE INDEXES (SUB-50MS QUERY OPTIMIZATION)
+-- ==============================================================================
+
+CREATE INDEX IF NOT EXISTS idx_leads_dealership_status
+  ON public.leads(dealership_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_leads_dealership_created_at
+  ON public.leads(dealership_id, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_leads_dealership_assigned_to
+  ON public.leads(dealership_id, assigned_to)
+  WHERE assigned_to IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_vehicles_dealership_status
+  ON public.vehicles(dealership_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_vehicles_dealership_created_at
+  ON public.vehicles(dealership_id, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_test_drives_dealership_status
+  ON public.test_drives(dealership_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_test_drives_dealership_scheduled_at
+  ON public.test_drives(dealership_id, scheduled_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_sales_deals_dealership_status
+  ON public.sales_deals(dealership_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_sales_deals_dealership_deal_date
+  ON public.sales_deals(dealership_id, deal_date DESC);
+
+CREATE INDEX IF NOT EXISTS idx_vehicle_expenses_dealership_created_at
+  ON public.vehicle_expenses(dealership_id, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_profiles_dealership_status
+  ON public.profiles(dealership_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_staff_invites_dealership_status
+  ON public.staff_invites(dealership_id, status);
+

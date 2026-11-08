@@ -40,7 +40,7 @@ export function DashboardHeader({
 
   return (
     <header
-      className={`fixed top-0 right-0 left-0 z-20 flex h-16 items-center justify-between border-b border-neutral-200/80 bg-white/90 px-6 backdrop-blur-md transition-all duration-300 ease-in-out ${
+      className={`fixed top-0 right-0 left-0 z-20 flex h-16 items-center justify-between bg-white/90 px-6 backdrop-blur-md transition-all duration-300 ease-in-out ${
         isSidebarCollapsed ? "lg:left-20" : "lg:left-64"
       }`}
     >
